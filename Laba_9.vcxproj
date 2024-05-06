@@ -136,6 +136,8 @@
     <ClCompile Include="DecoratorMax.cpp" />
     <ClCompile Include="DecoratorMin.cpp" />
     <ClCompile Include="FireR.cpp" />
+    <ClCompile Include="GreenhousePlants.cpp" />
+    <ClCompile Include="Greens.cpp" />
     <ClCompile Include="HumiditySensor.cpp" />
     <ClCompile Include="Humus.cpp" />
     <ClCompile Include="HumusStorage.cpp" />
@@ -159,6 +161,7 @@
     <ClCompile Include="PeatStorage.cpp" />
     <ClCompile Include="ProxyDatabase.cpp" />
     <ClCompile Include="R.cpp" />
+    <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="TemperatureSensor.cpp" />
     <ClCompile Include="TemperatureSensorCelsius.cpp" />
     <ClCompile Include="TomatoFactory.cpp" />
@@ -180,6 +183,8 @@
     <ClInclude Include="DecoratorMax.h" />
     <ClInclude Include="DecoratorMin.h" />
     <ClInclude Include="FireR.h" />
+    <ClInclude Include="GreenhousePlants.h" />
+    <ClInclude Include="Greens.h" />
     <ClInclude Include="HumiditySensor.h" />
     <ClInclude Include="Humus.h" />
     <ClInclude Include="HumusStorage.h" />
@@ -202,6 +207,7 @@
     <ClInclude Include="PeatStorage.h" />
     <ClInclude Include="ProxyDatabase.h" />
     <ClInclude Include="R.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="TemperatureSensor.h" />
     <ClInclude Include="TemperatureSensorCelsius.h" />
     <ClInclude Include="TomatoFactory.h" />

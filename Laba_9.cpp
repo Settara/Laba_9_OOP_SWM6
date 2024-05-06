@@ -16,15 +16,16 @@
 #include "WaterR.h"
 #include "AdapterForCelsius.h"
 #include "UnitType.h"
-
+#include "Singleton.h"
 
 int main()
 {
     setlocale(LC_ALL, "RUS");
     //Создаем систему управления теплицей
     IGMS* managmentSystem = new IGMS(3);
-    //Cоздаем динамиическую базу данных
-    IDynamicDatabase* dinB = new IDynamicDatabase("Динамическая база данных");
+    //Cоздаем динамиическую базу данных ч/з паттерн Singleton
+    IDynamicDatabase* dinB = Singleton::getConnection()->selectData();
+    //IDynamicDatabase* dinB = new IDynamicDatabase("Динамическая база данных");
     //Устанавливаем какое количество гумуса и торфа будет изначально в нашей динамической базе
     dinB->SetHumusQuantity(2);
     dinB->SetPeatQuantity(2);

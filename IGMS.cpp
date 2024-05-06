@@ -2,6 +2,20 @@
 
 void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISensor* Sensors[NSensors], IAO* Objects[NObjects], IIS* Systems[NSystem], Decorator* Decorators[NDecorators])
 {
+	//Реализация паттерна Prototype
+	//Создадим зелень донора 
+	Greens* greensDonor = new Greens();
+	string name = "Укроп";
+	greensDonor->setPlantsName(&name);
+
+	//Создадим зелень клона
+	Greens* greensClone = greensDonor->clone();
+
+	//Отобразим в консоли какую зелень мы создали
+	cout << "Создали: " << endl;
+	cout <<  greensDonor->getPlantsName() << endl;
+	cout <<  greensClone->getPlantsName() << endl;
+
 	//Создадим указатели на фабричные методы которые будут производить удобрения
 	INutrientsStorage *humuscreator = new HumusStorage();
 	INutrientsStorage *peatcreator  = new PeatStorage();
