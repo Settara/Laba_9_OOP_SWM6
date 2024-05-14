@@ -1,24 +1,118 @@
 #include "IGMS.h"
+//Реализация паттерна State
+class State;
+class PestControlMachine;
+
+//Класс отвечает за состояние
+class State
+{
+public:
+	virtual void on(PestControlMachine* m)
+	{
+		cout << endl << " Машина уже включена" << endl;
+	}
+	virtual void off(PestControlMachine* m)
+	{
+		cout << endl << " Машина уже выключена" << endl;
+	}
+	virtual ~State() {}
+};
+
+//Класс отвечает за машину для обработки от вредителей
+class PestControlMachine
+{
+	class State* current;	  //Указатель на текущее состояние
+public:
+	PestControlMachine();
+
+	void setCurrent(State* s) //Метод для смены состояния
+	{
+		current = s;
+	}
+	//Класс PestControlMachine делегирует операции on и off объекту состояния и передает самого себя
+	void on()
+	{
+		current->on(this);
+	}
+	//Для того чтобы объект который принял управление после своей работы мог бы изменить указатель current
+	void off()
+	{
+		current->off(this);
+	}
+};
+
+class ON : public State
+{
+public:
+	ON()
+	{
+		//cout << endl << " ON создался ";
+	}
+	~ON()
+	{
+		//cout << endl << " ON удалился ";
+	}
+	void off(PestControlMachine* m); //Переход в состояние OFF
+};
+
+class OFF : public State
+{
+public:
+	OFF()
+	{
+		//cout << endl << " OFF создался ";
+	}
+	~OFF()
+	{
+		//cout << endl << " OFF удалился ";
+	}
+	void on(PestControlMachine* m) //Переход в состояние ON
+	{
+		cout << endl << " Переход из состояния OFF в состояние ON";
+		m->setCurrent(new ON());
+		delete this;
+	}
+};
+
+void ON::off(PestControlMachine* m) //Переход в состояние OFF
+{
+	cout << endl << " Переход из состояния ON в состояние OFF";
+	m->setCurrent(new OFF());
+	delete this;
+}
+
+PestControlMachine::PestControlMachine()
+{
+	//Изначально когда машина появляется она в состоянии OFF
+	current = new OFF();
+	cout << endl;
+}
 
 void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISensor* Sensors[NSensors], IAO* Objects[NObjects], IIS* Systems[NSystem], Decorator* Decorators[NDecorators])
 {
+	cout << "Создали: " << endl;
 	//Реализация паттерна Prototype
 	//Создадим зелень донора 
-	Greens* greensDonor = new Greens();
-	string name = "Укроп";
-	greensDonor->setPlantsName(&name);
+	Greens* greensDonor1 = new Greens();
+	Greens* greensDonor2 = new Greens();
+	string name1 = "Укроп";
+	string name2 = "Петрушка";
+	greensDonor1->setPlantsName(&name1);
+	greensDonor2->setPlantsName(&name2);
 
 	//Создадим зелень клона
-	Greens* greensClone = greensDonor->clone();
+	Greens* greensClone1 = greensDonor1->clone();
+	Greens* greensClone2 = greensDonor2->clone();
 
 	//Отобразим в консоли какую зелень мы создали
-	cout << "Создали: " << endl;
-	cout <<  greensDonor->getPlantsName() << endl;
-	cout <<  greensClone->getPlantsName() << endl;
+	cout << greensDonor1->getPlantsName() << endl;
+	cout << greensClone1->getPlantsName() << endl;
+	cout << greensDonor2->getPlantsName() << endl;
+	cout << greensClone2->getPlantsName() << endl;
 
 	//Создадим указатели на фабричные методы которые будут производить удобрения
-	INutrientsStorage *humuscreator = new HumusStorage();
-	INutrientsStorage *peatcreator  = new PeatStorage();
+	INutrientsStorage* humuscreator = new HumusStorage();
+	INutrientsStorage* peatcreator = new PeatStorage();
 
 	//Создаем указатели на будущие объекты гумус и торф которые будут создаваться в цикле
 	INutrients* humus = NULL;
@@ -39,7 +133,7 @@ void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISenso
 	IPlant* tomatoplant = tomatofactory->CreatePlant();
 	//Посадим растение помидор
 	tomatoplant->TakePlant(tomatoseed);
-	
+
 	//Создадим семечко огурца и растение огурец
 	ISeed* cucumberseed = cucumberfactory->CreateSeed();
 	IPlant* cucumberplant = cucumberfactory->CreatePlant();
@@ -49,7 +143,7 @@ void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISenso
 
 	/*
 
-	//Создаем односвязный связный список 
+	//Создаем односвязный связный список
 	Node* node1, * node2, * node3;
 	node1 = new Node();
 	node2 = new Node();
@@ -67,9 +161,9 @@ void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISenso
 	//Передвинем итератор
 	iterator->operator++();
 	//Узнаем что же за число там лежит
-	cout << endl << "Что лежит в Node: " << iterator->operator*() << " "; 
+	cout << endl << "Что лежит в Node: " << iterator->operator*() << " ";
 	*/
-	
+
 	//Для начала нужно опросить все датчики чтобы узнать текущие параметры 
 	do
 	{
@@ -207,7 +301,7 @@ void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISenso
 							}
 						}
 					}
-					
+
 					//Тут реализуется паттерн Factory method
 					//Опрос сколько осталось гумуса в динамической базе 
 					if (DinBase->GetHumusQuantity() > 0)
@@ -216,9 +310,9 @@ void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISenso
 						root.Add(humus);
 						//Уменьшаем количество гумуса в базе на 1
 						DinBase->SetHumusQuantity(DinBase->GetHumusQuantity() - 1);
-							
+
 					}
-					
+
 					//Опрос сколько осталось торфа в динамической базе 
 					if (DinBase->GetPeatQuantityt() > 0)
 					{
@@ -244,7 +338,7 @@ void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISenso
 				//Освобождаем память
 				delete humus;
 			}
-			
+
 		}
 		if ((DinBase->GetPeatQuantityt() >= 0) && (flagkomp2 == true))
 		{
@@ -256,7 +350,25 @@ void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISenso
 				delete peat;
 			}
 		}
+
+		//Реализация паттерна State
+		void(PestControlMachine:: * ptrs[])() =
+		{
+			&PestControlMachine::off, &PestControlMachine::on
+		};
+		PestControlMachine pcm;
+		(pcm.*ptrs[1])();
+		cout << endl << " Машина работает" << endl;
+		(pcm.*ptrs[0])();
 		
+		/*cout << endl << " Counter равен " << Counter << endl;
+		if (Counter % 2 == 0) {
+			(pcm.*ptrs[0])();
+		}
+		else
+		{
+			(pcm.*ptrs[1])();
+		}*/
 		
 
 		//После этого выжидаем какое-то время и повторяем заново
