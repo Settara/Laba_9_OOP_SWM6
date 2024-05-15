@@ -1,5 +1,5 @@
 #pragma once
-
+//#define _CRT_SECURE_NO_WARNINGS
 #include <chrono>
 #include <thread>
 #include "IDynamicDatabase.h"
@@ -16,6 +16,7 @@
 #include "CucumberFactory.h"
 #include "Greens.h"
 //#include "State.h"
+#include "Memento.h"
 
 using namespace std::this_thread; // sleep_for, sleep_until
 using namespace std::chrono; // nanoseconds, system_clock, seconds

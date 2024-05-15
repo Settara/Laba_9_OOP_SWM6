@@ -22,7 +22,7 @@ int main()
 {
     setlocale(LC_ALL, "RUS");
     //Создаем систему управления теплицей
-    IGMS* managmentSystem = new IGMS(3);
+    IGMS* managmentSystem = new IGMS(2);
     //Cоздаем динамиическую базу данных ч/з паттерн Singleton
     IDynamicDatabase* dinB = Singleton::getConnection()->selectData();
     //IDynamicDatabase* dinB = new IDynamicDatabase("Динамическая база данных");
@@ -39,6 +39,8 @@ int main()
     sensors[0] = new TemperatureSensor();
     sensors[1] = new HumiditySensor();
     sensors[2] = new LightingSensor();
+    //Создаем датчик контроля дыма
+    sensors[4] = new AlarmSensor();
     //Создаем массив указателей на прикладные объекты
     IAO* objects[NObjects];
     //Создаем прикладные объекты

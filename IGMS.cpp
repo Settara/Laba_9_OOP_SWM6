@@ -140,6 +140,8 @@ void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISenso
 	//Посадим растение огурец
 	cucumberplant->TakePlant(cucumberseed);
 
+	//Переменная для хранения состояния датчика охраны
+	int AlarmCurrent;
 
 	/*
 
@@ -301,7 +303,16 @@ void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISenso
 							}
 						}
 					}
-
+					else
+					{
+						if (Sensors[i]->GiveName() == "AlarmSensor")
+						{
+							Sensors[i]->GetInformation();
+							AlarmCurrent = Sensors[i]->GiveInformation();
+							cout << endl << "Значение AlarmCurrent = " << AlarmCurrent;
+						}
+					}
+					
 					//Тут реализуется паттерн Factory method
 					//Опрос сколько осталось гумуса в динамической базе 
 					if (DinBase->GetHumusQuantity() > 0)
@@ -358,18 +369,30 @@ void IGMS::Management(IDynamicDatabase* DinBase, ProxyDatabase* Database, ISenso
 		};
 		PestControlMachine pcm;
 		(pcm.*ptrs[1])();
-		cout << endl << " Машина работает" << endl;
+		cout << endl << " Машина для обработки от вредителей работает" << endl;
 		(pcm.*ptrs[0])();
+	
+		//Реализация паттерна Memento
 		
-		/*cout << endl << " Counter равен " << Counter << endl;
-		if (Counter % 2 == 0) {
-			(pcm.*ptrs[0])();
-		}
-		else
+		//Делаем проверку на задымление
+		bool сondition = false;
+		if (AlarmCurrent == 1)
 		{
-			(pcm.*ptrs[1])();
-		}*/
-		
+			сondition = true;
+		}
+		Origenator* originator = new Origenator("Super");
+		Caretaker* caretaker = new Caretaker(originator);
+		caretaker->Backup();
+		originator->DoSomething(сondition);
+		caretaker->Backup();
+		cout << endl << endl;
+		caretaker->ShowHistory();
+		cout << endl << "Пора сохранить состояние" << endl << endl;
+		caretaker->Undo();
+		cout << endl << "Еще раз сохранить состояние" << endl << endl;
+		caretaker->Undo();
+		delete originator;
+		delete caretaker;
 
 		//После этого выжидаем какое-то время и повторяем заново
 		cout << endl;
